@@ -8,6 +8,7 @@
     max-width: 80%;
     display: flex;
     flex-wrap: wrap;
+    paddind: 2px;
 }
 .pbtn{
     cursor: pointer;
