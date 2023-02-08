@@ -1,0 +1,14 @@
+.drpdwnmenu{
+    max-height: 50%;
+    overflow-y: scroll;
+    border: 0.5px;
+    width: 100%;
+}
+.container{
+    max-width: 80%;
+    display: flex;
+    flex-wrap: wrap;
+}
+.pbtn{
+    cursor: pointer;
+}

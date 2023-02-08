@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title></title>
+   
+    <link href="{{ url_for('static', filename='stylesheets/calnutri.css') }}" rel="stylesheet" media="screen">
+    <script src="{{ url_for('static', filename='jquery.js') }}"></script>
+
+
+
+</head>
+
+<body>
+  <div id="hdr"></div>
+  <div id="parent">
+    <h1> Get nutrition of your meal </h1>
+    <div class="container">
+        <button class="btn" onclick="addel()">add another dish</button>
+        <button class="btn" onclick="subdata()">get nutrition</button>
+    </div>
+
+  </div>
+
+  <div id="nutri">  </div>
+
+</body>
+
+    <script>
+
+        const parnt= document.getElementById("parent");
+const nutrdv= document.getElementById("nutri")
+var dv= document.createElement("div");
+nutrdv.appendChild(dv);
+//parnt.style.backgroundColor= "lightpink";
+
+var num=0;
+let dsh = new Array(15);
+
+function addel(){
+//parnt.style.backgroundColor= "lightyellow";
+dsh[num]= new dishel();
+}
+
+
+class drpdwnopt{
+  constructor(drpdwn,inp,dsh,indx){
+  //dv.style.backgroundColor='lightblue';
+    this.drpdwn= drpdwn;
+    this.inp= inp; this.dsh= dsh;
+    this.indx=indx;
+    this.optnstb= document.createElement("p");
+    this.optnstb.innerHTML= this.dsh;
+    this.optnstb.setAttribute('indx',indx);
+    this.optnstb.addEventListener("click", ()=> {this.del()});
+    this.drpdwn.appendChild(this.optnstb);
+    this.optnstb.className= "pbtn";
+  }
+  del(){
+    this.drpdwn.innerHTML=this.optnstb.getAttribute('indx');
+    this.inp.value= this.optnstb.innerHTML;
+
+    this.inp.setAttribute('indx',this.optnstb.getAttribute('indx'));
+  }
+
+}
+
+class dishel{
+  constructor(){
+   //parnt.style.backgroundColor= "lightorange";
+   this.dv= document.createElement("div");
+   this.lbl= document.createElement("p");
+   this.inp= document.createElement("input");
+
+   this.dlt= document.createElement("button");
+   this.drpdwn= document.createElement("div");
+   parnt.appendChild(this.dv);
+   this.dv.appendChild(this.lbl);
+   this.dv.appendChild(this.inp);
+
+   this.dv.appendChild(this.dlt);
+   this.dv.appendChild(this.drpdwn);
+   this.lbl.innerHTML= "dish name";
+   this.dlt.innerHTML= "delete dish";
+   this.dlt.addEventListener("click", ()=> {this.delt()} );
+   this.inp.addEventListener("change", ()=> {this.inpchng()} );
+   this.dv.className= "container";
+   this.drpdwn.className= "drpdwnmenu";
+   num++;
+  }
+  inpchng(){
+  //parnt.style.backgroundColor= "lightgreen";
+  var inp = this.inp;
+
+  var drpdwn= this.drpdwn;
+  var dishsrch= this.inp.value;
+
+  $.ajax({
+    type:'POST',
+    url: "{{url_for('calnutri')}}",
+    //dataType: "json",
+    contentType: "application/json",
+    data: JSON.stringify({'dat': dishsrch, 'srch':'yes'}),
+    success: function(data){
+      var jsndt= JSON.parse(data);
+        for(var dshid in jsndt){
+
+      var optob= new drpdwnopt(drpdwn, inp, jsndt[dshid], dshid);
+
+      }
+
+     },
+    error: function(reslt){alert(reslt);}
+ });
+  }
+
+  delt(){
+   //parnt.style.backgroundColor= "lightblue";
+   this.dv.remove();
+   var indx= dsh.indexOf(this);
+   if(indx >-1){dsh.splice(indx,1);}
+   //parnt.style.backgroundColor= "lightpink";
+   num--;
+  }
+}
+
+    </script>
+
+<script>
+        function subdata(){
+    //parnt.style.backgroundColor= "orange";
+
+    let dish= [];
+
+    for(let i=0; i<num; i++){
+
+    dish[i]= dsh[i].inp.getAttribute("indx");
+    }
+
+
+ $.ajax({
+    type:'POST',
+    url: "{{url_for('calnutri')}}",
+    //dataType: "json",
+    contentType: "application/json",
+    data: JSON.stringify({'dat': dish, 'srch':'no'}),
+    success: function(data){ var dat = JSON.parse(data); //alert(dat['cal']);
+    dv.innerHTML=" ";
+     for(var el in dat){
+      var optnstb= document.createElement("LABEL");
+      optnstb.innerHTML= el;
+      dv.appendChild(optnstb);
+      var optnsvl= document.createElement("LABEL");
+      optnsvl.innerHTML= dat[el];
+      dv.appendChild(optnsvl);
+      var lnbr= document.createElement("br");
+      dv.appendChild(lnbr);
+      }
+     document.getElementById("nutri").appendChild(dv);
+     },
+    error: function(reslt){alert(JSON.parse(reslt));}
+ });
+ sub.style.backgroundColor= "green";
+}
+    </script>
+
+</html>
+
+ 
