@@ -47,7 +47,7 @@ def calnutri():
             return snd;
     return render_template('calcnutri.html');
 
-app.run(host="0.0.0.0")
+#app.run(host="0.0.0.0")
 
 
 
