@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  smplappwthpychrmgit:
+    image: smplappwthpychrmgit
+    build:
+      context: .
+      dockerfile: ./Dockerfile
